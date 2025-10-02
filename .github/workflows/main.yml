@@ -20,7 +20,7 @@ jobs:
           pip install -r requirements_scraper.txt
           python src/scraper.py
       - name: Upload scraped data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: scraped-data
           path: data/data_mentah_review_gapura.csv
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: scraped-data
           path: data/
@@ -42,7 +42,7 @@ jobs:
           pip install -r requirements_labeling.txt
           python src/labeling.py
       - name: Upload labeled data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: labeled-data
           path: |
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: labeled-data
           path: data/
@@ -65,7 +65,7 @@ jobs:
           pip install -r requirements_preprocessing.txt
           python src/preprocessing.py
       - name: Upload preprocessed data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: preprocessed-data
           path: |
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: preprocessed-data
           path: data/
@@ -89,7 +89,7 @@ jobs:
           pip install -r requirements_word_cloud.txt
           python src/word_cloud.py
       # - name: Upload wordcloud CSV
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
       #     name: wordcloud-data
       #     path: data/gapura_wordcloud.csv
@@ -102,7 +102,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: preprocessed-data
           path: data/
@@ -110,7 +110,7 @@ jobs:
           pip install -r requirements_training.txt
           python src/training.py
       - name: Upload trained models
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trained-models
           path: model/
