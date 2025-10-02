@@ -63,7 +63,7 @@ jobs:
 
   preprocessing:
     runs-on: ubuntu-latest
-    needs: labeling
+    #needs: labeling
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v4
@@ -86,7 +86,7 @@ jobs:
 
   wordcloud:
     runs-on: ubuntu-latest
-    needs: preprocessing
+    #needs: preprocessing
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v4
