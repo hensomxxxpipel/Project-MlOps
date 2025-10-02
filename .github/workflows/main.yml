@@ -38,7 +38,10 @@ jobs:
         with:
           name: scraped-data
           path: data/
-      - run: |
+      - name: Run labeling with GOOGLE_API_KEY
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
           pip install -r requirements_labeling.txt
           python src/labeling.py
       - name: Upload labeled data
