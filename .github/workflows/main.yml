@@ -1,0 +1,116 @@
+name: Projek MLOps CI
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"   # jalan tiap minggu (Minggu, jam 00:00 UTC)
+
+jobs:
+  scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install -r requirements_scraper.txt
+          python src/scraper.py
+      - name: Upload scraped data
+        uses: actions/upload-artifact@v3
+        with:
+          name: scraped-data
+          path: data/data_mentah_review_gapura.csv
+
+  labeling:
+    runs-on: ubuntu-latest
+    needs: scraper
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v3
+        with:
+          name: scraped-data
+          path: data/
+      - run: |
+          pip install -r requirements_labeling.txt
+          python src/labeling.py
+      - name: Upload labeled data
+        uses: actions/upload-artifact@v3
+        with:
+          name: labeled-data
+          path: |
+            data/review_gapura_dengan_sentiment.csv
+            data/review_gapura_checkpoint.csv
+
+  preprocessing:
+    runs-on: ubuntu-latest
+    needs: labeling
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v3
+        with:
+          name: labeled-data
+          path: data/
+      - run: |
+          pip install -r requirements_preprocessing.txt
+          python src/preprocessing.py
+      - name: Upload preprocessed data
+        uses: actions/upload-artifact@v3
+        with:
+          name: preprocessed-data
+          path: |
+            data/review_gapura_stemming.csv
+            data/review_gapura_stemming_balanced.csv
+
+  wordcloud:
+    runs-on: ubuntu-latest
+    needs: preprocessing
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v3
+        with:
+          name: preprocessed-data
+          path: data/
+      - run: |
+          pip install -r requirements_word_cloud.txt
+          python src/word_cloud.py
+      # - name: Upload wordcloud CSV
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: wordcloud-data
+      #     path: data/gapura_wordcloud.csv
+
+  training:
+    runs-on: ubuntu-latest
+    needs: preprocessing
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v3
+        with:
+          name: preprocessed-data
+          path: data/
+      - run: |
+          pip install -r requirements_training.txt
+          python src/training.py
+      - name: Upload trained models
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-models
+          path: model/
