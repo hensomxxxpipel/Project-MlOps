@@ -69,10 +69,10 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      - uses: actions/download-artifact@v4
-        with:
-          name: labeled-data
-          path: data/
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: labeled-data
+      #     path: data/
       - run: |
           pip install -r requirements_preprocessing.txt
           python src/preprocessing.py
